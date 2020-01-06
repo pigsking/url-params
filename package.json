@@ -1,0 +1,25 @@
+{
+    "name": "search-params",
+    "version": "0.0.1",
+    "author": "Allen AuYeung",
+    "license": "MIT",
+    "main": "dist/index.js",
+    "scripts": {
+        "serve": "yarn parcel src/index.html",
+        "start": "yarn rollup -c -w",
+        "build": "yarn rollup -c",
+        "test": "mocha"
+    },
+    "devDependencies": {
+        "babel-core": "^6.26.3",
+        "babel-plugin-external-helpers": "^6.22.0",
+        "babel-preset-latest": "^6.24.1",
+        "chai": "^4.2.0",
+        "mocha": "^6.2.2",
+        "parcel": "^1.12.4",
+        "rollup": "^1.28.0",
+        "rollup-plugin-babel": "3",
+        "rollup-plugin-node-resolve": "^5.2.0"
+    },
+    "dependencies": {}
+}
