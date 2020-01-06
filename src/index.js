@@ -34,13 +34,13 @@ class SearchParams {
         return obj[key] != null
     }
     get(key) {
-        let value = ''
+        let value = null
         const arr = searchParamsArr(this.str)
 
         for (let i = 0; i < arr.length; i++) {
             const k = `${key}=`
             if (arr[i].indexOf(k) !== -1) {
-                value = arr[i].split(k)[1] || ''
+                value = arr[i].split(k)[1]
                 break
             }
         }
@@ -53,7 +53,7 @@ class SearchParams {
         for (let i = 0; i < arr.length; i++) {
             const k = `${key}=`
             if (arr[i].indexOf(k) !== -1) {
-                const value = arr[i].split(k)[1] || ''
+                const value = arr[i].split(k)[1]
                 values.push(value)
             }
         }
@@ -61,10 +61,17 @@ class SearchParams {
     }
     append(key, value) {
         this.str += `&${key}=${value}`
-
     }
     delete(key) {
-        // this.str.replace(new RegExp(key, 'g'), '');
+        const arr = searchParamsArr(this.str)
+        let filterArr = []
+        for (let i = 0; i < arr.length; i++) {
+            const k = `${key}=`
+            if (arr[i].indexOf(k) === -1) {
+                filterArr.push(arr[i])
+            }
+        }
+        this.str = filterArr.join('&')
     }
     entries() {
         let keysAndValsArr = []
@@ -81,40 +88,66 @@ class SearchParams {
         const arr = searchParamsArr(this.str)
 
         for (let i = 0; i < arr.length; i++) {
-            const key = arr[i].split('=')[0] || ''
+            const key = arr[i].split('=')[0] || null
             keys.push(key)
 
         }
         return keys
     }
-    set() {
-
+    set(key, value) {
+        this.delete(key)
+        this.append(key, value)
     }
     sort() {
-
+        this.str = searchParamsArr(this.str).sort().join('&')
     }
     toString() {
         return this.str
     }
     values() {
+        let values = []
+        const arr = searchParamsArr(this.str)
 
+        for (let i = 0; i < arr.length; i++) {
+            const value = arr[i].split('=')[1] || null
+            values.push(value)
+
+        }
+        return values
+    }
+    forEach(fn) {
+        const arr = searchParamsArr(this.str)
+        for (let i = 0; i < arr.length; i++) {
+            const itemArr = arr[i].split('=')
+            fn(itemArr[1], itemArr[0])
+        }
     }
 }
 
 module.exports = SearchParams
 
-// const url = 'https://www.toyou.xyz?age=allen&age=18'
-// const params = new SearchParams(url)
-// // console.log('has:' + params.has('age'))
-// // console.log('get:' + params.get('age'))
-// // console.log('getAll:' + params.getAll('age'))
-// // console.log('append:' + params.append('name', 'allen'))
+const url = 'https://www.toyou.xyz?name=allen&age=18&gender=boy'
+const params = new SearchParams(url)
+// // // console.log('has:' + params.has('age'))
+// // // console.log('get:' + params.get('age'))
+// console.log(params.getAll('age'))
+console.log('append:' + params.append('height', '175'))
+ console.log('toString:' + params.toString())
+// // // console.log('keys:' + params.keys())
+// // // console.log('entries:' + params.entries())
+// // console.log('delete:' + params.delete('age'))
 // // console.log('toString:' + params.toString())
-// // console.log('keys:' + params.keys())
-// // console.log('entries:' + params.entries())
-// console.log('delete:' + params.delete('age'))
-// console.log('toString:' + params.toString())
+// // console.log('sort:' + params.sort())
+// // console.log('toString:' + params.toString())
+// // console.log('values:' + params.values())
+// // console.log('set:' + params.set('age',30))
+// // console.log('toString:' + params.toString())
 
+
+
+// // params.forEach(function (value,key){
+// //     console.log(value,key)
+// // })
 
 
 

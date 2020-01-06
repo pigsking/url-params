@@ -69,13 +69,13 @@
       }, {
           key: 'get',
           value: function get(key) {
-              var value = '';
+              var value = null;
               var arr = searchParamsArr(this.str);
 
               for (var i = 0; i < arr.length; i++) {
                   var k = key + '=';
                   if (arr[i].indexOf(k) !== -1) {
-                      value = arr[i].split(k)[1] || '';
+                      value = arr[i].split(k)[1];
                       break;
                   }
               }
@@ -90,7 +90,7 @@
               for (var i = 0; i < arr.length; i++) {
                   var k = key + '=';
                   if (arr[i].indexOf(k) !== -1) {
-                      var value = arr[i].split(k)[1] || '';
+                      var value = arr[i].split(k)[1];
                       values.push(value);
                   }
               }
@@ -104,7 +104,15 @@
       }, {
           key: 'delete',
           value: function _delete(key) {
-              // this.str.replace(new RegExp(key, 'g'), '');
+              var arr = searchParamsArr(this.str);
+              var filterArr = [];
+              for (var i = 0; i < arr.length; i++) {
+                  var k = key + '=';
+                  if (arr[i].indexOf(k) === -1) {
+                      filterArr.push(arr[i]);
+                  }
+              }
+              this.str = filterArr.join('&');
           }
       }, {
           key: 'entries',
@@ -125,17 +133,22 @@
               var arr = searchParamsArr(this.str);
 
               for (var i = 0; i < arr.length; i++) {
-                  var key = arr[i].split('=')[0] || '';
+                  var key = arr[i].split('=')[0] || null;
                   keys.push(key);
               }
               return keys;
           }
       }, {
           key: 'set',
-          value: function set() {}
+          value: function set(key, value) {
+              this.delete(key);
+              this.append(key, value);
+          }
       }, {
           key: 'sort',
-          value: function sort() {}
+          value: function sort() {
+              this.str = searchParamsArr(this.str).sort().join('&');
+          }
       }, {
           key: 'toString',
           value: function toString() {
@@ -143,7 +156,25 @@
           }
       }, {
           key: 'values',
-          value: function values() {}
+          value: function values() {
+              var values = [];
+              var arr = searchParamsArr(this.str);
+
+              for (var i = 0; i < arr.length; i++) {
+                  var value = arr[i].split('=')[1] || null;
+                  values.push(value);
+              }
+              return values;
+          }
+      }, {
+          key: 'forEach',
+          value: function forEach(fn) {
+              var arr = searchParamsArr(this.str);
+              for (var i = 0; i < arr.length; i++) {
+                  var itemArr = arr[i].split('=');
+                  fn(itemArr[1], itemArr[0]);
+              }
+          }
       }]);
       return SearchParams;
   }();
