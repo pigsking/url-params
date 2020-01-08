@@ -125,30 +125,3 @@ class SearchParams {
 }
 
 module.exports = SearchParams
-
-const url = 'https://www.toyou.xyz?name=allen&age=18&gender=boy'
-const params = new SearchParams(url)
-// // // console.log('has:' + params.has('age'))
-// // // console.log('get:' + params.get('age'))
-// console.log(params.getAll('age'))
-console.log('append:' + params.append('height', '175'))
- console.log('toString:' + params.toString())
-// // // console.log('keys:' + params.keys())
-// // // console.log('entries:' + params.entries())
-// // console.log('delete:' + params.delete('age'))
-// // console.log('toString:' + params.toString())
-// // console.log('sort:' + params.sort())
-// // console.log('toString:' + params.toString())
-// // console.log('values:' + params.values())
-// // console.log('set:' + params.set('age',30))
-// // console.log('toString:' + params.toString())
-
-
-
-// // params.forEach(function (value,key){
-// //     console.log(value,key)
-// // })
-
-
-
-

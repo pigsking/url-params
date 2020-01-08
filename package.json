@@ -5,7 +5,7 @@
     "license": "MIT",
     "main": "dist/index.js",
     "scripts": {
-        "serve": "yarn parcel src/index.html",
+        "serve": "yarn parcel test/index.html",
         "start": "yarn rollup -c -w",
         "build": "yarn rollup -c",
         "test": "mocha"
@@ -22,6 +22,6 @@
         "rollup-plugin-babel": "3",
         "rollup-plugin-node-resolve": "^5.2.0"
     },
-    "dependencies": {
+    "dependencies": {}
      
 }
