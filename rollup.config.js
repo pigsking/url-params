@@ -2,11 +2,11 @@
 import babel from 'rollup-plugin-babel';
 
 module.exports = {
-    input: 'src/index.js',
+    input: 'index.js',
     output: {
         file: 'build/index.js',
         format: 'umd',
-        name: 'URLSearchParams'
+        name: 'SearchParams'
     },
     plugins: [
         // resolve(),

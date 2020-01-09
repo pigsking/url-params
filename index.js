@@ -14,24 +14,23 @@ function searchParamsArr(str) {
 }
 
 function searchParamsObj(str) {
-    let obj = {}
+    let paramsObj = {}
     const paramsArr = searchParamsArr(str)
 
     for (let i = 0; i < paramsArr.length; i++) {
         const paramArr = paramsArr[i].split('=')
-        obj[paramArr[0]] = paramsArr[1]
+        paramsObj[paramArr[0]] = paramsArr[1]
     }
 
-    return obj
+    return paramsObj
 }
 
-class SearchParams {
+export default class SearchParams {
     constructor(str) {
         this.str = str || ""
     }
     has(key) {
-        const obj = searchParamsObj(this.str)
-        return obj[key] != null
+        return key in searchParamsObj(this.str)
     }
     get(key) {
         let value = null
@@ -71,7 +70,6 @@ class SearchParams {
                 filterArr.push(arr[i])
             }
         }
-        this.str = filterArr.join('&')
     }
     entries() {
         let keysAndValsArr = []
@@ -90,12 +88,13 @@ class SearchParams {
         for (let i = 0; i < arr.length; i++) {
             const key = arr[i].split('=')[0] || null
             keys.push(key)
-
         }
         return keys
     }
     set(key, value) {
-        this.delete(key)
+        if (this.has(key)) {
+            this.delete(key)
+        }
         this.append(key, value)
     }
     sort() {
@@ -111,7 +110,6 @@ class SearchParams {
         for (let i = 0; i < arr.length; i++) {
             const value = arr[i].split('=')[1] || null
             values.push(value)
-
         }
         return values
     }
@@ -123,5 +121,3 @@ class SearchParams {
         }
     }
 }
-
-module.exports = SearchParams

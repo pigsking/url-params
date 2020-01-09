@@ -6,7 +6,7 @@
     "main": "dist/index.js",
     "scripts": {
         "serve": "yarn parcel test/index.html",
-        "start": "yarn rollup -c -w",
+        "build:watch": "yarn rollup -c -w",
         "build": "yarn rollup -c",
         "test": "mocha"
     },

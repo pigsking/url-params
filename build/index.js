@@ -1,7 +1,8 @@
-(function (factory) {
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  factory();
-}((function () { 'use strict';
+  (global = global || self, global.SearchParams = factory());
+}(this, (function () { 'use strict';
 
   var classCallCheck = function (instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -42,15 +43,15 @@
   }
 
   function searchParamsObj(str) {
-      var obj = {};
+      var paramsObj = {};
       var paramsArr = searchParamsArr(str);
 
       for (var i = 0; i < paramsArr.length; i++) {
           var paramArr = paramsArr[i].split('=');
-          obj[paramArr[0]] = paramsArr[1];
+          paramsObj[paramArr[0]] = paramsArr[1];
       }
 
-      return obj;
+      return paramsObj;
   }
 
   var SearchParams = function () {
@@ -63,8 +64,7 @@
       createClass(SearchParams, [{
           key: 'has',
           value: function has(key) {
-              var obj = searchParamsObj(this.str);
-              return obj[key] != null;
+              return key in searchParamsObj(this.str);
           }
       }, {
           key: 'get',
@@ -112,7 +112,6 @@
                       filterArr.push(arr[i]);
                   }
               }
-              this.str = filterArr.join('&');
           }
       }, {
           key: 'entries',
@@ -141,7 +140,9 @@
       }, {
           key: 'set',
           value: function set(key, value) {
-              this.delete(key);
+              if (this.has(key)) {
+                  this.delete(key);
+              }
               this.append(key, value);
           }
       }, {
@@ -179,6 +180,6 @@
       return SearchParams;
   }();
 
-  module.exports = SearchParams;
+  return SearchParams;
 
 })));

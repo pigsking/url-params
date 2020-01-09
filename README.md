@@ -2,7 +2,7 @@
 :warning: My little toy, use with caution.
 
 ## API
-The same API as [URLSearchParams]
+The same API as [URLSearchParams].
 
 ## License
 [GLWTPL]

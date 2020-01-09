@@ -9,11 +9,13 @@
 </head>
 
 <body>
-    <script src='../build/index.js'></script>
+    <script src='http://192.168.56.1:8000/index.js'></script>
     <script>
-        const s = new SearchParams()
-        console.log(s.toString())
+        const s = new SearchParams('?name=allen&gender=boy')
+        console.log('get method:', s.get('name'))
     </script>
 </body>
 
 </html>
+
+<!-- https://segmentfault.com/a/1190000010628352 -->
