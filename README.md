@@ -1,31 +1,25 @@
 # search-params
 :warning: My little toy, under the [GLWTPL] license, use with caution.
 
+## Usage
+```html
+<script type="text/javascript" src="https://pigsking.github.io/search-params/build/search-params.js"></script>
+```
+
 ## API
 The same API as [URLSearchParams].
 
 - [x] [has]
-
 - [x] [set]
-
 - [x] [append]
-
 - [x] [delete]
-
 - [x] [keys]
-
 - [x] [values]
-
 - [x] [entries]
-
 - [x] [get]
-
 - [x] [getAll]
-
-- [ ] [sort]
-
+- [x] [sort]
 - [x] [forEach]
-
 - [x] [toString]
 
 ## License
