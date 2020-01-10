@@ -10,12 +10,29 @@
 
 <body>
     <script src='http://192.168.56.1:8000/index.js'></script>
+    <!-- <script src="./polyfill.js"></script> -->
     <script>
-        const s = new SearchParams('?name=allen&gender=boy')
-        console.log('get method:', s.get('name'))
+        const u = new URLSearchParams('name=allen&gender=boy&gender=man')
+
+        // u.forEach((value, key) => {
+        //     console.log(value, key)
+        // })
+
+        const s = new SearchParams([["foo", 1],["bar", 2]])
+
+        // s.forEach((value, key) => {
+        //  console.log(key,value)
+        // })
+        // for (let value of s.entries()) {
+        //     console.log(value)
+        // }
+        // console.log(s.set('gender','superman'))
+        console.log(s.toString())
+
     </script>
 </body>
 
 </html>
 
 <!-- https://segmentfault.com/a/1190000010628352 -->
+<!-- http://es6.ruanyifeng.com/#docs/iterator -->

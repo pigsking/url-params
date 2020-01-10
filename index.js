@@ -1,123 +1,136 @@
+const iterable = !!Symbol
 
-function searchParamsArr(str) {
-    if (str.indexOf('=') === -1) return false
-
-    let paramsArr = []
-    if (str.indexOf('?') !== -1) {
-        const paramsStr = str.split('?')[1]
-        paramsArr = paramsStr.split('&')
-    } else {
-        paramsArr = str.split('&')
-    }
-
-    return paramsArr
+function getType(obj) {
+    return Object.prototype.toString.call(obj).slice(8, -1);
 }
 
-function searchParamsObj(str) {
+function getParamsObj(params) {
     let paramsObj = {}
-    const paramsArr = searchParamsArr(str)
+    let paramsArr = []
 
-    for (let i = 0; i < paramsArr.length; i++) {
-        const paramArr = paramsArr[i].split('=')
-        paramsObj[paramArr[0]] = paramsArr[1]
+    if (getType(params) === 'Object') {
+        for (let key in params) {
+            if (params.hasOwnProperty(key)) {
+                paramsObj[key] = [params[key]]
+            }
+        }
     }
 
+    if (getType(params) === 'Array') {
+        for (let i = 0; i < params.length; i++) {
+            paramsObj[params[i][0]] = [params[i][1]]
+        }
+    }
+
+    if (getType(params) === 'String') {
+        if (params.indexOf('=') === -1) return false
+
+        if (params.indexOf('?') !== -1) {
+            const paramsStr = params.split('?')[1]
+            paramsArr = paramsStr.split('&')
+        } else {
+            paramsArr = params.split('&')
+        }
+
+        for (let i = 0; i < paramsArr.length; i++) {
+            const item = paramsArr[i].split('=')
+            const key = item[0]
+            const value = item[1]
+
+            if (key in paramsObj) {
+                paramsObj[key].push(value)
+            } else {
+                paramsObj[key] = [value]
+            }
+        }
+    }
     return paramsObj
 }
 
+function makeIterator(arr) {
+    const iterator = {
+        next() {
+            const value = arr.shift();
+            return { done: value === undefined, value: value };
+        }
+    };
+
+    if (iterable) {
+        iterator[Symbol.iterator] = () => iterator
+    }
+
+    return iterator;
+}
+
 export default class SearchParams {
-    constructor(str) {
-        this.str = str || ""
+    constructor(paramsStr) {
+        this.paramsStr = paramsStr || {}
+        this.paramsObj = getParamsObj(this.paramsStr)
     }
     has(key) {
-        return key in searchParamsObj(this.str)
+        return key in this.paramsObj
     }
     get(key) {
-        let value = null
-        const arr = searchParamsArr(this.str)
-
-        for (let i = 0; i < arr.length; i++) {
-            const k = `${key}=`
-            if (arr[i].indexOf(k) !== -1) {
-                value = arr[i].split(k)[1]
-                break
-            }
-        }
-        return value
+        return key in this.paramsObj ? this.paramsObj[key][0] : null
     }
     getAll(key) {
-        let values = []
-        const arr = searchParamsArr(this.str)
-
-        for (let i = 0; i < arr.length; i++) {
-            const k = `${key}=`
-            if (arr[i].indexOf(k) !== -1) {
-                const value = arr[i].split(k)[1]
-                values.push(value)
-            }
-        }
-        return values
+        return key in this.paramsObj ? this.paramsObj[key] : []
     }
     append(key, value) {
-        this.str += `&${key}=${value}`
+        this.paramsObj[key] = [value]
     }
     delete(key) {
-        const arr = searchParamsArr(this.str)
-        let filterArr = []
-        for (let i = 0; i < arr.length; i++) {
-            const k = `${key}=`
-            if (arr[i].indexOf(k) === -1) {
-                filterArr.push(arr[i])
-            }
-        }
+        delete this.paramsObj[key]
     }
-    entries() {
-        let keysAndValsArr = []
-        const arr = searchParamsArr(this.str)
-
-        for (let i = 0; i < arr.length; i++) {
-            const itemArr = arr[i].split('=')
-            keysAndValsArr.push([itemArr[0], itemArr[1]])
-        }
-        return keysAndValsArr
+    set(key, value) {
+        this.paramsObj[key] = [value]
+        return this.paramsObj
     }
     keys() {
         let keys = []
-        const arr = searchParamsArr(this.str)
-
-        for (let i = 0; i < arr.length; i++) {
-            const key = arr[i].split('=')[0] || null
+        this.forEach((value, key) => {
             keys.push(key)
-        }
-        return keys
-    }
-    set(key, value) {
-        if (this.has(key)) {
-            this.delete(key)
-        }
-        this.append(key, value)
-    }
-    sort() {
-        this.str = searchParamsArr(this.str).sort().join('&')
-    }
-    toString() {
-        return this.str
+        })
+        return makeIterator(keys)
     }
     values() {
         let values = []
-        const arr = searchParamsArr(this.str)
-
-        for (let i = 0; i < arr.length; i++) {
-            const value = arr[i].split('=')[1] || null
+        this.forEach(value => {
             values.push(value)
-        }
-        return values
+        })
+        return makeIterator(values)
+    }
+    entries() {
+        let keysAndValsArr = []
+        this.forEach((value, key) => {
+            keysAndValsArr.push([key, value])
+        })
+        return keysAndValsArr
+    }
+    sort() {
+        // let keys = []
+        // let sortObj = {}
+        // const obj = this.paramsObj
+
+        // for (let key in obj) {
+        //     if (obj.hasOwnProperty(key)) {
+        //         keys.push(key)
+        //     }
+        // }
     }
     forEach(fn) {
-        const arr = searchParamsArr(this.str)
-        for (let i = 0; i < arr.length; i++) {
-            const itemArr = arr[i].split('=')
-            fn(itemArr[1], itemArr[0])
-        }
+        const obj = this.paramsObj
+        Object.getOwnPropertyNames(obj).forEach(key => {
+            obj[key].forEach(value => {
+                fn(value, key)
+            })
+        })
+    }
+    toString() {
+        let paramsArr = []
+        this.forEach((value, key) => {
+            paramsArr.push(`${key}=${value}`)
+        })
+        return paramsArr.join('&')
     }
 }

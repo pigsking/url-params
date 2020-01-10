@@ -3,6 +3,7 @@ const expect = chai.expect;
 const assertArrays = require('chai-arrays');
 
 const SearchParams = require('../build/index.js')
+// const SearchParams = URLSearchParams
 
 chai.use(assertArrays);
 
@@ -90,9 +91,12 @@ describe("delete", function () {
 describe("keys", function () {
     it('获取所有参数名', function () {
         const s = getSimpleParams()
-        expect(s.keys()).to.be.equalTo(['name', 'gender'])
-        s.append('age', 18)
-        expect(s.keys()).to.be.equalTo(['name', 'gender', 'age'])
+
+        let keys = []
+        for (let k of s.keys()) {
+            keys.push(k)
+        }
+        expect(keys).to.be.equalTo(['name', 'gender'])
     });
 });
 
@@ -125,9 +129,11 @@ describe("sort", function () {
 describe("values", function () {
     it('获取所有参数值', function () {
         const s = getSimpleParams()
-        expect(s.values()).to.be.equalTo(['allen', 'boy'])
-        s.append('age', 18)
-        expect(s.values()).to.be.equalTo(['allen', 'boy', '18'])
+        let values = []
+        for (let k of s.values()) {
+            values.push(k)
+        }
+        expect(values).to.be.equalTo(['allen', 'boy'])
     });
 });
 

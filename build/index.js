@@ -28,153 +28,169 @@
     };
   }();
 
-  function searchParamsArr(str) {
-      if (str.indexOf('=') === -1) return false;
+  var iterable = !!Symbol;
 
-      var paramsArr = [];
-      if (str.indexOf('?') !== -1) {
-          var paramsStr = str.split('?')[1];
-          paramsArr = paramsStr.split('&');
-      } else {
-          paramsArr = str.split('&');
-      }
-
-      return paramsArr;
+  function getType(obj) {
+      return Object.prototype.toString.call(obj).slice(8, -1);
   }
 
-  function searchParamsObj(str) {
+  function getParamsObj(params) {
       var paramsObj = {};
-      var paramsArr = searchParamsArr(str);
+      var paramsArr = [];
 
-      for (var i = 0; i < paramsArr.length; i++) {
-          var paramArr = paramsArr[i].split('=');
-          paramsObj[paramArr[0]] = paramsArr[1];
+      if (getType(params) === 'Object') {
+          for (var key in params) {
+              if (params.hasOwnProperty(key)) {
+                  paramsObj[key] = [params[key]];
+              }
+          }
       }
 
+      if (getType(params) === 'Array') {
+          for (var i = 0; i < params.length; i++) {
+              paramsObj[params[i][0]] = [params[i][1]];
+          }
+      }
+
+      if (getType(params) === 'String') {
+          if (params.indexOf('=') === -1) return false;
+
+          if (params.indexOf('?') !== -1) {
+              var paramsStr = params.split('?')[1];
+              paramsArr = paramsStr.split('&');
+          } else {
+              paramsArr = params.split('&');
+          }
+
+          for (var _i = 0; _i < paramsArr.length; _i++) {
+              var item = paramsArr[_i].split('=');
+              var _key = item[0];
+              var value = item[1];
+
+              if (_key in paramsObj) {
+                  paramsObj[_key].push(value);
+              } else {
+                  paramsObj[_key] = [value];
+              }
+          }
+      }
       return paramsObj;
   }
 
+  function makeIterator(arr) {
+      var iterator = {
+          next: function next() {
+              var value = arr.shift();
+              return { done: value === undefined, value: value };
+          }
+      };
+
+      if (iterable) {
+          iterator[Symbol.iterator] = function () {
+              return iterator;
+          };
+      }
+
+      return iterator;
+  }
+
   var SearchParams = function () {
-      function SearchParams(str) {
+      function SearchParams(paramsStr) {
           classCallCheck(this, SearchParams);
 
-          this.str = str || "";
+          this.paramsStr = paramsStr || {};
+          this.paramsObj = getParamsObj(this.paramsStr);
       }
 
       createClass(SearchParams, [{
           key: 'has',
           value: function has(key) {
-              return key in searchParamsObj(this.str);
+              return key in this.paramsObj;
           }
       }, {
           key: 'get',
           value: function get(key) {
-              var value = null;
-              var arr = searchParamsArr(this.str);
-
-              for (var i = 0; i < arr.length; i++) {
-                  var k = key + '=';
-                  if (arr[i].indexOf(k) !== -1) {
-                      value = arr[i].split(k)[1];
-                      break;
-                  }
-              }
-              return value;
+              return key in this.paramsObj ? this.paramsObj[key][0] : null;
           }
       }, {
           key: 'getAll',
           value: function getAll(key) {
-              var values = [];
-              var arr = searchParamsArr(this.str);
-
-              for (var i = 0; i < arr.length; i++) {
-                  var k = key + '=';
-                  if (arr[i].indexOf(k) !== -1) {
-                      var value = arr[i].split(k)[1];
-                      values.push(value);
-                  }
-              }
-              return values;
+              return key in this.paramsObj ? this.paramsObj[key] : [];
           }
       }, {
           key: 'append',
           value: function append(key, value) {
-              this.str += '&' + key + '=' + value;
+              this.paramsObj[key] = [value];
           }
       }, {
           key: 'delete',
           value: function _delete(key) {
-              var arr = searchParamsArr(this.str);
-              var filterArr = [];
-              for (var i = 0; i < arr.length; i++) {
-                  var k = key + '=';
-                  if (arr[i].indexOf(k) === -1) {
-                      filterArr.push(arr[i]);
-                  }
-              }
+              delete this.paramsObj[key];
           }
       }, {
-          key: 'entries',
-          value: function entries() {
-              var keysAndValsArr = [];
-              var arr = searchParamsArr(this.str);
-
-              for (var i = 0; i < arr.length; i++) {
-                  var itemArr = arr[i].split('=');
-                  keysAndValsArr.push([itemArr[0], itemArr[1]]);
-              }
-              return keysAndValsArr;
+          key: 'set',
+          value: function set(key, value) {
+              this.paramsObj[key] = [value];
+              return this.paramsObj;
           }
       }, {
           key: 'keys',
           value: function keys() {
               var keys = [];
-              var arr = searchParamsArr(this.str);
-
-              for (var i = 0; i < arr.length; i++) {
-                  var key = arr[i].split('=')[0] || null;
+              this.forEach(function (value, key) {
                   keys.push(key);
-              }
-              return keys;
-          }
-      }, {
-          key: 'set',
-          value: function set(key, value) {
-              if (this.has(key)) {
-                  this.delete(key);
-              }
-              this.append(key, value);
-          }
-      }, {
-          key: 'sort',
-          value: function sort() {
-              this.str = searchParamsArr(this.str).sort().join('&');
-          }
-      }, {
-          key: 'toString',
-          value: function toString() {
-              return this.str;
+              });
+              return makeIterator(keys);
           }
       }, {
           key: 'values',
           value: function values() {
               var values = [];
-              var arr = searchParamsArr(this.str);
-
-              for (var i = 0; i < arr.length; i++) {
-                  var value = arr[i].split('=')[1] || null;
+              this.forEach(function (value) {
                   values.push(value);
-              }
-              return values;
+              });
+              return makeIterator(values);
+          }
+      }, {
+          key: 'entries',
+          value: function entries() {
+              var keysAndValsArr = [];
+              this.forEach(function (value, key) {
+                  keysAndValsArr.push([key, value]);
+              });
+              return keysAndValsArr;
+          }
+      }, {
+          key: 'sort',
+          value: function sort() {
+              // let keys = []
+              // let sortObj = {}
+              // const obj = this.paramsObj
+
+              // for (let key in obj) {
+              //     if (obj.hasOwnProperty(key)) {
+              //         keys.push(key)
+              //     }
+              // }
           }
       }, {
           key: 'forEach',
           value: function forEach(fn) {
-              var arr = searchParamsArr(this.str);
-              for (var i = 0; i < arr.length; i++) {
-                  var itemArr = arr[i].split('=');
-                  fn(itemArr[1], itemArr[0]);
-              }
+              var obj = this.paramsObj;
+              Object.getOwnPropertyNames(obj).forEach(function (key) {
+                  obj[key].forEach(function (value) {
+                      fn(value, key);
+                  });
+              });
+          }
+      }, {
+          key: 'toString',
+          value: function toString() {
+              var paramsArr = [];
+              this.forEach(function (value, key) {
+                  paramsArr.push(key + '=' + value);
+              });
+              return paramsArr.join('&');
           }
       }]);
       return SearchParams;
