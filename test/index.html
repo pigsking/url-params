@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <script src='http://192.168.56.1:8000/index.js'></script>
+    <script src='http://192.168.56.1:8000/search-params.js'></script>
     <!-- <script src="./polyfill.js"></script> -->
     <script>
         const u = new URLSearchParams('name=allen&gender=boy&gender=man')
@@ -18,7 +18,7 @@
         //     console.log(value, key)
         // })
 
-        const s = new SearchParams([["foo", 1],["bar", 2]])
+        const s = new SearchParams('c=4&a=2&b=3&a=1')
 
         // s.forEach((value, key) => {
         //  console.log(key,value)
@@ -27,6 +27,7 @@
         //     console.log(value)
         // }
         // console.log(s.set('gender','superman'))
+        s.sort()
         console.log(s.toString())
 
     </script>

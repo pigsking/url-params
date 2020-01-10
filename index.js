@@ -108,15 +108,20 @@ export default class SearchParams {
         return keysAndValsArr
     }
     sort() {
-        // let keys = []
-        // let sortObj = {}
-        // const obj = this.paramsObj
+        let keys = []
+        let sortObj = {}
+        const obj = this.paramsObj
 
-        // for (let key in obj) {
-        //     if (obj.hasOwnProperty(key)) {
-        //         keys.push(key)
-        //     }
-        // }
+        for (let key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                keys.push(key)
+            }
+        }
+        keys.sort()
+        for (let i = 0; i < keys.length; i++) {
+            sortObj[keys[i]] = obj[keys[i]]
+        }
+        this.paramsObj = sortObj
     }
     forEach(fn) {
         const obj = this.paramsObj

@@ -1,12 +1,9 @@
 {
     "name": "search-params",
-    "version": "0.0.1",
     "author": "Allen AuYeung",
-    "license": "MIT",
-    "main": "dist/index.js",
     "scripts": {
         "serve": "yarn parcel test/index.html",
-        "build:watch": "yarn rollup -c -w",
+        "watch": "yarn rollup -c -w",
         "build": "yarn rollup -c",
         "test": "mocha"
     },
@@ -21,7 +18,5 @@
         "rollup": "^1.28.0",
         "rollup-plugin-babel": "3",
         "rollup-plugin-node-resolve": "^5.2.0"
-    },
-    "dependencies": {}
-     
+    }
 }

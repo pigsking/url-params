@@ -26,7 +26,7 @@ The same API as [URLSearchParams].
 
 - [x] [forEach]
 
-- [x] [toSting]
+- [x] [toString]
 
 ## License
 [GLWTPL]
@@ -46,4 +46,4 @@ The same API as [URLSearchParams].
 [getAll]: https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams/getAll
 [sort]: https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams/sort
 [forEach]: https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams/forEach
-[toSting]: https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams/toSting
+[toString]: https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams/toString

@@ -163,15 +163,20 @@
       }, {
           key: 'sort',
           value: function sort() {
-              // let keys = []
-              // let sortObj = {}
-              // const obj = this.paramsObj
+              var keys = [];
+              var sortObj = {};
+              var obj = this.paramsObj;
 
-              // for (let key in obj) {
-              //     if (obj.hasOwnProperty(key)) {
-              //         keys.push(key)
-              //     }
-              // }
+              for (var key in obj) {
+                  if (obj.hasOwnProperty(key)) {
+                      keys.push(key);
+                  }
+              }
+              keys.sort();
+              for (var i = 0; i < keys.length; i++) {
+                  sortObj[keys[i]] = obj[keys[i]];
+              }
+              this.paramsObj = sortObj;
           }
       }, {
           key: 'forEach',

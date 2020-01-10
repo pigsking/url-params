@@ -4,7 +4,7 @@ import babel from 'rollup-plugin-babel';
 module.exports = {
     input: 'index.js',
     output: {
-        file: 'build/index.js',
+        file: 'build/search-params.js',
         format: 'umd',
         name: 'SearchParams'
     },

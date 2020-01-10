@@ -2,7 +2,7 @@ const chai = require('chai')
 const expect = chai.expect;
 const assertArrays = require('chai-arrays');
 
-const SearchParams = require('../build/index.js')
+const SearchParams = require('../build/search-params.js')
 // const SearchParams = URLSearchParams
 
 chai.use(assertArrays);
